@@ -22,16 +22,22 @@ export const MainTodo: React.FC<Props> = ({
   handleUpdateTodo,
   loading,
 }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  // const [setEditTitle, setEditTitle] = useState(todo.title);
+  // const [isEditing, setIsEditing] = useState(false);
+  const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
 
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isEditing) {
+    if (editingTodoId !== 0) {
       inputRef.current?.focus();
     }
-  }, [isEditing]);
+  }, [editingTodoId]);
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      setEditingTodoId(null);
+    }
+  };
 
   return (
     <section
@@ -56,32 +62,35 @@ export const MainTodo: React.FC<Props> = ({
               }
             />
           </label>
-          {isEditing ? (
+          {editingTodoId === todo.id ? (
             <input
               data-cy="TodoTitleField"
               value={todo.title}
               ref={inputRef}
               className="todo__title-field"
               autoFocus
+              onBlur={() => setEditingTodoId(null)}
+              onKeyDown={onKeyDown}
             />
           ) : (
             <span
               data-cy="TodoTitle"
               className="todo__title"
-              onDoubleClick={() => setIsEditing(true)}
+              onDoubleClick={() => setEditingTodoId(todo.id)}
             >
               {todo.title}
             </span>
           )}
-
-          <button
-            type="button"
-            className="todo__remove"
-            data-cy="TodoDelete"
-            onClick={() => deleteTodo(todo.id)}
-          >
-            ×
-          </button>
+          {!editingTodoId && (
+            <button
+              type="button"
+              className="todo__remove"
+              data-cy="TodoDelete"
+              onClick={() => deleteTodo(todo.id)}
+            >
+              ×
+            </button>
+          )}
           <div
             data-cy="TodoLoader"
             className={cn('modal overlay', {
