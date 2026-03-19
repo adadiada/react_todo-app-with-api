@@ -40,13 +40,17 @@ export const MainTodo: React.FC<Props> = ({
   const save = async (todo: Todo) => {
     const newTitle = upDateTitle.trim();
 
-    if (newTitle === '') {
-      deleteTodo(todo.id);
-    } else if (newTitle !== todo.title) {
-      await handleUpdateTodo({ ...todo, title: newTitle });
-    }
+    try {
+      if (newTitle === '') {
+        await deleteTodo(todo.id);
+      } else if (newTitle !== todo.title) {
+        await handleUpdateTodo({ ...todo, title: newTitle });
+      }
 
-    setEditingTodoId(null);
+      setEditingTodoId(null);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, todo: Todo) => {
