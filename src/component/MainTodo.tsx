@@ -22,20 +22,40 @@ export const MainTodo: React.FC<Props> = ({
   handleUpdateTodo,
   loading,
 }) => {
-  // const [isEditing, setIsEditing] = useState(false);
+  const [upDateTitle, setUpDateTitle] = useState<string>('');
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
-
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (editingTodoId !== 0) {
+    if (editingTodoId !== null) {
       inputRef.current?.focus();
     }
   }, [editingTodoId]);
 
-  const onKeyDown = (e) => {
+  const cancel = () => {
+    setEditingTodoId(null);
+    setUpDateTitle('');
+  };
+
+  const save = async (todo: Todo) => {
+    const newTitle = upDateTitle.trim();
+
+    if (newTitle === '') {
+      deleteTodo(todo.id);
+    } else if (newTitle !== todo.title) {
+      await handleUpdateTodo({ ...todo, title: newTitle });
+    }
+
+    setEditingTodoId(null);
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, todo: Todo) => {
     if (e.key === 'Escape') {
-      setEditingTodoId(null);
+      cancel();
+    }
+
+    if (e.key === 'Enter') {
+      save(todo);
     }
   };
 
@@ -65,18 +85,21 @@ export const MainTodo: React.FC<Props> = ({
           {editingTodoId === todo.id ? (
             <input
               data-cy="TodoTitleField"
-              value={todo.title}
+              value={upDateTitle}
               ref={inputRef}
               className="todo__title-field"
-              autoFocus
-              onBlur={() => setEditingTodoId(null)}
-              onKeyDown={onKeyDown}
+              onBlur={() => save(todo)}
+              onKeyDown={e => onKeyDown(e, todo)}
+              onChange={e => setUpDateTitle(e.target.value)}
             />
           ) : (
             <span
               data-cy="TodoTitle"
               className="todo__title"
-              onDoubleClick={() => setEditingTodoId(todo.id)}
+              onDoubleClick={() => {
+                setEditingTodoId(todo.id);
+                setUpDateTitle(todo.title);
+              }}
             >
               {todo.title}
             </span>
