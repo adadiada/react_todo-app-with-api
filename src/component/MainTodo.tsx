@@ -25,6 +25,7 @@ export const MainTodo: React.FC<Props> = ({
   const [upDateTitle, setUpDateTitle] = useState<string>('');
   const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const skipNextBlurRef = useRef(false);
 
   useEffect(() => {
     if (editingTodoId !== null) {
@@ -49,6 +50,7 @@ export const MainTodo: React.FC<Props> = ({
 
       setEditingTodoId(null);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   };
@@ -59,7 +61,16 @@ export const MainTodo: React.FC<Props> = ({
     }
 
     if (e.key === 'Enter') {
+      skipNextBlurRef.current = true;
       save(todo);
+    }
+  };
+
+  const handleBlur = (todo: Todo) => {
+    if (skipNextBlurRef.current) {
+      skipNextBlurRef.current = false;
+
+      return;
     }
   };
 
@@ -92,7 +103,7 @@ export const MainTodo: React.FC<Props> = ({
               value={upDateTitle}
               ref={inputRef}
               className="todo__title-field"
-              onBlur={() => save(todo)}
+              onBlur={handleBlur}
               onKeyDown={e => onKeyDown(e, todo)}
               onChange={e => setUpDateTitle(e.target.value)}
             />
