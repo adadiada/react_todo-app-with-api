@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Todo } from '../types/Todo';
 import { Filter } from '../utils/Filter';
+import cn from 'classnames';
 
 type Props = {
   todos: Todo[];
@@ -31,7 +32,7 @@ export const Footer: React.FC<Props> = ({
       <nav className="filter" data-cy="Filter">
         <a
           href="#/"
-          className={`filter__link ${filter === Filter.All ? 'selected' : ''}`}
+          className={cn('filter__link', { selected: filter === Filter.All })}
           onClick={e => {
             e.preventDefault();
             setFilter(Filter.All);
@@ -43,7 +44,7 @@ export const Footer: React.FC<Props> = ({
 
         <a
           href="#/active"
-          className={`filter__link ${filter === Filter.Active ? 'selected' : ''}`}
+          className={cn('filter__link', { selected: filter === Filter.Active })}
           data-cy="FilterLinkActive"
           onClick={e => {
             e.preventDefault();
@@ -55,7 +56,9 @@ export const Footer: React.FC<Props> = ({
 
         <a
           href="#/completed"
-          className={`filter__link ${filter === Filter.Completed ? 'selected' : ''}`}
+          className={cn('filter__link', {
+            selected: filter === Filter.Completed,
+          })}
           data-cy="FilterLinkCompleted"
           onClick={e => {
             e.preventDefault();
@@ -71,9 +74,7 @@ export const Footer: React.FC<Props> = ({
         className="todoapp__clear-completed"
         data-cy="ClearCompletedButton"
         disabled={!hasCompleted}
-        onClick={() => {
-          onClear();
-        }}
+        onClick={onClear}
       >
         Clear completed
       </button>

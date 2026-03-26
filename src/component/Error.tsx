@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useEffect } from 'react';
+import cn from 'classnames';
 
 type Props = {
   error: string;
@@ -25,17 +26,15 @@ export const Error: React.FC<Props> = ({
   return (
     <div
       data-cy="ErrorNotification"
-      className={`notification is-danger is-light has-text-weight-normal ${
-        error ? '' : 'hidden'
-      }`}
+      className={cn('notification is-danger is-light has-text-weight-normal', {
+        hidden: !error,
+      })}
     >
       <button
         data-cy="HideErrorButton"
         type="button"
         className="delete"
-        onClick={() => {
-          onCloseError();
-        }}
+        onClick={() => onCloseError()}
       />
       {error}
     </div>

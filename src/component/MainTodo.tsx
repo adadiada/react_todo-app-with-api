@@ -49,6 +49,7 @@ export const MainTodo: React.FC<Props> = ({
       }
 
       setEditingTodoId(null);
+      setUpDateTitle('');
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
@@ -66,12 +67,14 @@ export const MainTodo: React.FC<Props> = ({
     }
   };
 
-  const handleBlur = (todo: Todo) => {
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>, todo: Todo) => {
     if (skipNextBlurRef.current) {
       skipNextBlurRef.current = false;
 
       return;
     }
+
+    save(todo);
   };
 
   return (
@@ -103,7 +106,7 @@ export const MainTodo: React.FC<Props> = ({
               value={upDateTitle}
               ref={inputRef}
               className="todo__title-field"
-              onBlur={handleBlur}
+              onBlur={e => handleBlur(e, todo)}
               onKeyDown={e => onKeyDown(e, todo)}
               onChange={e => setUpDateTitle(e.target.value)}
             />
@@ -119,7 +122,7 @@ export const MainTodo: React.FC<Props> = ({
               {todo.title}
             </span>
           )}
-          {!editingTodoId && (
+          {editingTodoId !== todo.id && (
             <button
               type="button"
               className="todo__remove"

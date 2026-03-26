@@ -122,8 +122,13 @@ export const App: React.FC = () => {
       .then(() => {
         setTodos(current => current.filter(todo => todo.id !== todoId));
       })
-      .catch(() => setError('Unable to delete a todo'))
-      .finally(() => setLoadingTodoId(null));
+      .catch(err => {
+        setError('Unable to update a todo');
+        throw err; // викликач знав про помилку
+      })
+      .finally(() => {
+        setLoadingTodoId(null);
+      });
   }
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
