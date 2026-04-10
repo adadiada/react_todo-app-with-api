@@ -123,7 +123,7 @@ export const App: React.FC = () => {
         setTodos(current => current.filter(todo => todo.id !== todoId));
       })
       .catch(err => {
-        setError('Unable to update a todo');
+        setError('Unable to delete a todo');
         throw err; // викликач знав про помилку
       })
       .finally(() => {
