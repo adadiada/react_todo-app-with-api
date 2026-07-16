@@ -22,7 +22,6 @@ export const Error: React.FC<Props> = ({
 
     return () => window.clearTimeout(timer);
   }, [error, onCloseError]);
-  // mksl
 
   return (
     <div

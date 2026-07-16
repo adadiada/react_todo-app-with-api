@@ -62,6 +62,8 @@ export const MainTodo: React.FC<Props> = ({
     }
 
     if (e.key === 'Enter') {
+      e.preventDefault();
+      e.stopPropagation();
       skipNextBlurRef.current = true;
       save(todo);
     }
@@ -74,12 +76,16 @@ export const MainTodo: React.FC<Props> = ({
       return;
     }
 
+    e.preventDefault();
     save(todo);
   };
 
   return (
     <section
-      className={`todoapp__main ${(todos.length === 0 && !tempTodo) || loading ? 'hidden' : ''}`}
+      className={cn(
+        'todoapp__main',
+        ((todos.length === 0 && !tempTodo) || loading) && 'hidden',
+      )}
       data-cy="TodoList"
     >
       {filteredTodos.map(todo => (
